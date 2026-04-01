@@ -98,3 +98,19 @@ Eine Lösung, die oft funktioniert:
           "*.s": "arm-debugger.arm"
        }
   stehen. Dann ist der Language Mode für alle *.s Dateien entsprechend gesetzt.
+### VSCode-Benutzerdaten-Cache
+- Wenn alles nicht zusammenpasst, dann einfach mal den Cache löschen - Tat aus Verzweiflung :). 
+- VSCode schließen
+- Cache löschen. Der Cache liegt an folgender Stelle:
+  - macOS: ~/Library/Application Support/Code/Cache/
+  - Windows: %APPDATA%\Code\Cache\
+  - Linux: ~/.config/Code/Cache/
+### Debugger hält nicht beim ersten Befehl einer Assembler Prozedur
+- Der vom Compiler generierte Code zu einer Funktion hat einen Prolog und einen Epilog. Das ist der Code zur Verwaltung von Stackframes etc. Wenn man C-Level debugt, möchte man bei einen StepInto nach dem Prolog Code anhalten. Dafür fügt der Compiler entsprechende Informationen für den Debugger ein (gdwarf-2 oder gdwarf-4). 
+  Der von uns verwendete Assembler armasm fügt diese Infos leider nicht ein. Man kann sie auch nicht über Assembler Direktiven (wie .loc und .file beim gas Assembler) einfügen. Also rät der Debugger bei einer Assembler Prozedur, wo der Prolog fertig ist. Das führt dazu, dass man in einer *.s Datei in der Regel keinen Breakpoint auf den ersten Befehl einer Assembler Prozedur setzen kann bzw. StepInto erst beim zweiten Befehl der Assembler  Prozedur hält.
+  Es gibt drei Möglichkeiten, wie man trotzdem beim ersten Befehl einer Assembler Prozedur anhalten kann.
+- Man fügt als ersten Befehl der Assembler Prozedur einen NOP Befehl ein. Der Debugger geht bei dem Befehl NOP davon aus, dass der Prolog fertig ist. Somit kann man auf den NOP Befehl einen Breakpoint setzen.
+- Man setzt den Breakpoint im Disassembler View auf den ersten Befehl der Assembler Prozedur (typischer Weise der PUSH).
+- Man setzt einen Breakpoint bei dem BL Befehl, der in die Assembler Prozedur springt. Über den Debugger Befehl stepi (Kurzform si) führt der Debugger genau eine Instruktion aus (daher das i wie Instruktion :)) - also den BL Befehl. Dann hält der Debugger am ersten Befehl der Assembler Prozedur an.
+  Leider gibt es für den Befehl si keinen Button im Debugger View. Daher muss man in der Konsole des Debugger den Befehl „> si“ eingeben (Das „>“ ist wichtig, siehe Kommentar oben)
+- Anmerkung: Man könnten auf lange Sicht den armasm durch den gas Assembler ersetzen. Dann kann man mit .loc und .file Assembler Direktiven für den Debugger einfügen.
