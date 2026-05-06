@@ -43,7 +43,6 @@ main
     ldr     R0, =VariableC 
     strh    R4,[R0]
 
-    
 ;* Change value from x1234 to x4321
     ldr     R1, =VariableB  ; Anw09
     ldrb    R6, [R1]
