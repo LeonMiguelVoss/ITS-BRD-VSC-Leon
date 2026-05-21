@@ -2,6 +2,13 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "type": "java",
+            "name": "PrimzahlSieb",
+            "request": "launch",
+            "mainClass": "PrimzahlSieb",
+            "projectName": ""
+        },
+        {
             "name": "STLink@pyOCD (launch)",
             "type": "gdbtarget",
             "request": "launch",

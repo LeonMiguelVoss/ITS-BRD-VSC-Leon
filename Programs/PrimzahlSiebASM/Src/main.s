@@ -46,6 +46,22 @@ main	PROC
 		LDR	r0,=text
         BL  lcdPrintS
 
+;		anlegen des indexes/feldes für alle zahlen
+;		Alle werte auf 1 (istPrimzahl) setzen
+
+;		MAIN LOOP
+;		Loop durch den zahlenbereich
+;		Wenn der Aktuelle wert True ist dann,
+;		setze variable c auf aktuelle Stelle + 1
+;		Solange c kleiner als der gesammte zahlenbereich,
+;		dann frage ab ob c % i == 0 ist
+;		Wenn ja, dann ist die Zahl teilbar und der wert wird auf false gesetzt
+;		Wenn nein, dann erhöhe c
+;		Dieser ablauf widerholt sich solange, bis alle zahlen des Bereiches einmal druchgegangen wurden
+
+;		Am ende werden alle Zahlen ausgeben die den Wert True haben.
+
+
 forever	b	forever		; nowhere to retun if main ends		
 		ENDP
 	
