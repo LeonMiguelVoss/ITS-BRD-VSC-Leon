@@ -117,7 +117,7 @@
   "cmake.ignoreCMakeListsMissing": true,
   "C_Cpp_Runner.msvcBatchPath": "",
   "clangd.arguments": [
-    "--compile-commands-dir=c:\\Studium\\SoSe26\\GT\\Workspace\\ITS-BRD-VSC-Leon\\Programs\\A3ASM\\out\\A3ASM\\ITSboard_Assembly\\Debug"
+    "--compile-commands-dir=c:\\Studium\\SoSe26\\GT\\Workspace\\ITS-BRD-VSC-Leon\\Programs\\PrimzahlSiebASM\\out\\PrimzahlSiebASM\\ITSboard_Assembly\\Debug"
   ],
   "debug.hideSlowPreLaunchWarning": true,
   "debug.showInStatusBar": "never",

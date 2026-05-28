@@ -1,70 +1,82 @@
 ;******************** (C) COPYRIGHT HAW-Hamburg ********************************
 ;* File Name          : main.s
-;* Author             : Silke Behn	
+;* Author             : Leon Miguel Voß
 ;* Version            : V1.0
-;* Date               : 01.06.2021
-;* Description        : This is a simple main.
-;					  :
-;					  : Replace this main with yours.
-;
+;* Date               : 27.05.2026
+;* Description        : Sieb des Eratosthenes (Primzahlen 2-1000)
 ;*******************************************************************************
     EXTERN initITSboard
-    EXTERN lcdPrintS            ;Display ausgabe
+    EXTERN lcdPrintS
     EXTERN GUI_init
-;	EXTERN TP_Init
 
 ;********************************************
-; Data section, aligned on 4-byte boundery
-;********************************************
-	
-	AREA MyData, DATA, align = 2
-	
-	    GLOBAL text
-DEFAULT_BRIGHTNESS DCW  800
-	
-text	DCB	"Hallo liebes TI-Labor (asm-project)",0
-
-;********************************************
-; Code section, aligned on 8-byte boundery
+; Data section, aligned on 4-byte boundary
 ;********************************************
 
-	AREA |.text|, CODE, READONLY, ALIGN = 3
+    AREA MyData, DATA, ALIGN = 2
+
+sieb    FILL 1001, 1        ; Array[1001], alle Bytes = 1 (prim)
+
+;********************************************
+; Code section, aligned on 8-byte boundary
+;********************************************
+
+    AREA |.text|, CODE, READONLY, ALIGN = 3
 
 ;--------------------------------------------
 ; main subroutine
 ;--------------------------------------------
-	EXPORT main [CODE]
-	
-main	PROC
+    EXPORT main [CODE]
+
+main    PROC
         BL initITSboard
-		ldr r1, =DEFAULT_BRIGHTNESS
-		ldrh r0, [r1]
-		bl GUI_init
-		mov r0, #0x00
-;		bl TP_Init
-		
-		LDR	r0,=text
-        BL  lcdPrintS
 
-;		anlegen des indexes/feldes für alle zahlen
-;		Alle werte auf 1 (istPrimzahl) setzen
+        ; Register:
+        ; r0 = Basisadresse sieb
+        ; r1 = i (äußere Schleife)
+        ; r2 = t (innere Schleife) / temporär
+        ; r3 = temporär (Byte-Wert)
 
-;		MAIN LOOP
-;		Loop durch den zahlenbereich
-;		Wenn der Aktuelle wert True ist dann,
-;		setze variable c auf aktuelle Stelle + 1
-;		Solange c kleiner als der gesammte zahlenbereich,
-;		dann frage ab ob c % i == 0 ist
-;		Wenn ja, dann ist die Zahl teilbar und der wert wird auf false gesetzt
-;		Wenn nein, dann erhöhe c
-;		Dieser ablauf widerholt sich solange, bis alle zahlen des Bereiches einmal druchgegangen wurden
-
-;		Am ende werden alle Zahlen ausgeben die den Wert True haben.
+        LDR     r0, =sieb
+		STRB    r1, [r0, #0]    ; sieb[0] = 0
+        STRB    r1, [r0, #1]    ; sieb[1] = 0
+        MOV     r1, #2              ; i = 2
 
 
-forever	b	forever		; nowhere to retun if main ends		
-		ENDP
-	
-		ALIGN
-       
-		END
+while_01
+        CMP     r1, #1000
+        BGT     endwhile_01         ; while (i <= 1000)
+
+do_01
+if_02
+        LDRB    r3, [r0, r1]        ; r3 = sieb[i]
+        CMP     r3, #1
+        BNE     endif_02            ; if (sieb[i])
+
+then_02
+        MUL     r2, r1, r1          ; t = i * i
+
+while_03
+        CMP     r2, #1000
+        BGT     endwhile_03         ; while (t <= 1000)
+
+do_03
+        MOV     r3, #0
+        STRB    r3, [r0, r2]        ; sieb[t] = 0
+        ADD     r2, r2, r1          ; t += i
+        B       while_03
+
+endwhile_03
+
+endif_02
+        ADD     r1, r1, #1          ; i++
+        B       while_01
+
+endwhile_01
+
+forever b       forever
+        ENDP
+
+        ALIGN
+
+        END
