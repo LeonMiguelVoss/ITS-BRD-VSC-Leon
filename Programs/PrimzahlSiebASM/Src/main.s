@@ -15,7 +15,8 @@
 
     AREA MyData, DATA, ALIGN = 2
 
-sieb    FILL 1001, 1        ; Array[1001], alle Bytes = 1 (prim)
+sieb        FILL 1001, 1        ; Array[1001], alle Bytes = 1 (prim)
+primzahlen  FILL 672, 0          ; 168 Primzahlen * 4 Byte
 
 ;********************************************
 ; Code section, aligned on 8-byte boundary
@@ -42,9 +43,9 @@ main    PROC
         STRB    r1, [r0, #1]    ; sieb[1] = 0
         MOV     r1, #2              ; i = 2
 
-
 while_01
-        CMP     r1, #1000
+		MUL 	r10, r1, r1
+        CMP     r10, #1000
         BGT     endwhile_01         ; while (i <= 1000)
 
 do_01
@@ -73,6 +74,33 @@ endif_02
         B       while_01
 
 endwhile_01
+
+; ------------------------------------------------------------
+        ; r4 = Basisadresse primzahlen
+        ; r5 = Schreibindex in primzahlen (Byte-Offset, +4 pro Eintrag)
+
+        LDR     r4, =primzahlen
+        MOV     r5, #0              ; index = 0
+        MOV     r1, #2              ; i = 2
+
+beginWhile_4
+        CMP     r1, #1000
+        BGT     endWhile_4          ; while (i <= 1000)
+
+beginIf_5
+        LDRB    r3, [r0, r1]        ; r3 = sieb[i]
+        CMP     r3, #1
+        BNE     endIf_5             ; if (sieb[i] == 1)
+
+then_5
+        STR     r1, [r4, r5]        ; primzahlen[index] = i
+        ADD     r5, r5, #4          ; index += 4
+
+endIf_5
+        ADD     r1, r1, #1          ; i++
+        B       beginWhile_4
+
+endWhile_4
 
 forever b       forever
         ENDP
