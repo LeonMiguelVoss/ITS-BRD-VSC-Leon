@@ -16,7 +16,7 @@
     AREA MyData, DATA, ALIGN = 2
 
 sieb        FILL 1001, 1        ; Array[1001], alle Bytes = 1 (prim)
-primzahlen  FILL 672, 0          ; 168 Primzahlen * 4 Byte
+primzahlen  FILL 672, 0         ; 168 Primzahlen * 4 Byte
 
 ;********************************************
 ; Code section, aligned on 8-byte boundary
@@ -83,11 +83,11 @@ endwhile_01
         MOV     r5, #0              ; index = 0
         MOV     r1, #2              ; i = 2
 
-beginWhile_4
+While_4
         CMP     r1, #1000
         BGT     endWhile_4          ; while (i <= 1000)
 
-beginIf_5
+If_5
         LDRB    r3, [r0, r1]        ; r3 = sieb[i]
         CMP     r3, #1
         BNE     endIf_5             ; if (sieb[i] == 1)
@@ -98,7 +98,7 @@ then_5
 
 endIf_5
         ADD     r1, r1, #1          ; i++
-        B       beginWhile_4
+        B       While_4
 
 endWhile_4
 
